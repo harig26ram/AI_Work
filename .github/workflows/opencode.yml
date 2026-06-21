@@ -27,7 +27,7 @@ jobs:
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
-          RESPONSE=$(opencode run --model openrouter/nvidia/nemotron-3-super-120b-a12b:free "Read the issue title and body, then provide a helpful response. Issue title: ${{ github.event.issue.title }} Issue body: ${{ github.event.issue.body }}" 2>&1)
+          RESPONSE=$(openrouter/nvidia/nemotron-nano-9b-v2:free "Read the issue title and body, then provide a helpful response. Issue title: ${{ github.event.issue.title }} Issue body: ${{ github.event.issue.body }}" 2>&1)
           echo "response<<EOF" >> $GITHUB_OUTPUT
           echo "$RESPONSE" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT

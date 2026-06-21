@@ -8,35 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
-      contents: write
-      issues: write
-      pull-requests: write
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 1
           persist-credentials: false
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Install OpenCode
-        run: npm install -g opencode-ai
-      - name: Run OpenCode
-        id: opencode
+      - uses: anomalyco/opencode/github@v1.17.9
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-        run: |
-          RESPONSE=$(opencode run --model openrouter/nvidia/nemotron-nano-9b-v2:free "Read the issue title and body, then provide a helpful response. Issue title: ${{ github.event.issue.title }} Issue body: ${{ github.event.issue.body }}" 2>&1)
-          echo "$RESPONSE" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-      - name: Post Comment
-        uses: actions/github-script@v7
         with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `${{ steps.opencode.outputs.response }}`
-            })
+          model: openrouter/nvidia/nemotron-nano-9b-v2:free

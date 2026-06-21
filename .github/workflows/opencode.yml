@@ -8,13 +8,22 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
+      contents: write
+      issues: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 1
           persist-credentials: false
-      - uses: anomalyco/opencode/github@v1.17.9
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install OpenCode
+        run: npm install -g opencode-ai
+      - name: Run OpenCode
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-        with:
-          model: openrouter/nvidia/nemotron-3-super-120b-a12b:free
+        run: |
+          opencode run "Read the issue title and body, then provide a helpful response. Issue title: ${{ github.event.issue.title }} Issue body: ${{ github.event.issue.body }}"
